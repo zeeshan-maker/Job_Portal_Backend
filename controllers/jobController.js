@@ -1,5 +1,4 @@
 const Job = require("../models/Job");
-
 exports.createJob = async (req, res) => {
   const {company,category,title,description,requirements,employmentType,location,salaryRange,education,openings}= req.body;
   const postedBy= req?.user.user_id;
