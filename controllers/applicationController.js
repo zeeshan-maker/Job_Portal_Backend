@@ -8,7 +8,7 @@ exports.applyJob = async (req, res) => {
     const existing = await Application.findOne({job,applicant})
      if (existing) {
       return res.status(400)
-      .json({ status:400, message:"You have already applied for this job" });
+      .json({ status:400, error:"You have already applied for this job" });
     }
     const application = new Application({job,applicant,resume,coverLetter});
     await application.save();
@@ -34,7 +34,7 @@ exports.getApplicationById = async (req, res) => {
     const application = await Application.findById(req.params.id)
       .populate("job", "title company")
       .populate("applicant", "name email");
-    if (!application) return res.status(404).json({ error: "Application not found" });
+    if (!application) return res.status(404).json({status:404,error: "Application not found" });
     res.json(application);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -48,19 +48,19 @@ exports.updateApplicationStatus = async (req, res) => {
       { status: req.body.status },
       { new: true }
     );
-    if (!application) return res.status(404).json({ error: "Application not found" });
-    res.json({ message: "Application status updated", application });
+    if (!application) return res.status(404).json({status:404, error: "Application not found" });
+    res.status(200).json({status:200, message: "Application status updated", application });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({status:500, error: err.message });
   }
 };
 
 exports.deleteApplication = async (req, res) => {
   try {
     const application = await Application.findByIdAndDelete(req.params.id);
-    if (!application) return res.status(404).json({ error: "Application not found" });
-    res.json({ message: "Application deleted successfully" });
+    if (!application) return res.status(404).json({status:404, error: "Application not found" });
+    res.status(200).json({status:200, message: "Application deleted successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({status:500, error: err.message });
   }
 };
